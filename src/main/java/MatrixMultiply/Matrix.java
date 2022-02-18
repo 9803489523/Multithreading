@@ -4,10 +4,8 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 import java.util.ArrayList;
 import java.util.List;
-
 
 /**
  * @Author Nozdryuhin Aleksandr
@@ -44,6 +42,7 @@ public class Matrix {
     @Getter
     @Setter
     private int threadQuantity;
+
     /**
      * constructor with params
      * @param first, first matrix
@@ -115,5 +114,4 @@ public class Matrix {
             }
         }
     }
-
 }
