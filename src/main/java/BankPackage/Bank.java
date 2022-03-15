@@ -17,7 +17,6 @@ public class Bank {
     public static final int NUMBER_OF_EMPLOYEES= 5;
     public static final int SERVICE_TIME=       2000;
     public static final int CLIENTS_PER_MIN=    300;
-    public static final int TIME_WORKING=10000;
     public static CashRegister cashRegister= new CashRegister(10000);
 
     public static void main(String[] args) throws InterruptedException {
@@ -28,29 +27,12 @@ public class Bank {
         for(Employee employee:employees){
             employee.start();
         }
-        Long start=System.currentTimeMillis();
-        Long time;
-        int counter=0;
         while (true){
-            time=System.currentTimeMillis();
-            if(time-start<TIME_WORKING) {
-                Client client = new Client(SERVICE_TIME);
+            //if queue so long, we stop accept the clients during 20 sec
+                if(employees.get(0).getClients().size()>5)
+                    Thread.sleep(20000);
+                Client client =clientGenerator(CLIENTS_PER_MIN);
                 employees.get(searchMinClientQueueEmployee(employees)).addClient(client);
-            }
-            if(counter==5&&(time-start>TIME_WORKING)){
-            System.out.println("Все клиенты обслужены, банк закрывается!");
-                for(Employee employee:employees){
-                    employee.setActive(false);
-                }
-                return;
-            }
-            else
-                counter=0;
-           Thread.sleep(60000/CLIENTS_PER_MIN);
-           for(Employee employee:employees){
-               if(employee.getClients().size()==0)
-                   counter++;
-           }
         }
 
     }
@@ -68,5 +50,15 @@ public class Bank {
                 minId=i;
         }
         return minId;
+    }
+
+    /**
+     * method to generate clients
+     * @param time, thread sleeping time
+     * @return new client
+     */
+    public static Client clientGenerator(int time) throws InterruptedException {
+        Thread.sleep(60000/time);
+        return new Client(SERVICE_TIME);
     }
 }

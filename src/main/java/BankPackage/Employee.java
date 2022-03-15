@@ -57,7 +57,10 @@ public class Employee extends Thread{
      * @param client, that add to list
      */
     public void addClient(Client client){
-        clients.add(client);
+        synchronized (clients) {
+            clients.add(client);
+            clients.notify();
+        }
     }
 
     /**
@@ -85,6 +88,11 @@ public class Employee extends Thread{
                 }
             }
         }
+        else{
+            synchronized (clients){
+                clients.wait();
+            }
+        }
     }
 
     /**
@@ -95,12 +103,6 @@ public class Employee extends Thread{
     public void run() {
         while (isActive) {
             workWithClient();
-            try{
-                Thread.sleep(400);
-            }
-            catch(InterruptedException e){
-                System.out.println("Thread has been interrupted");
-            }
         }
     }
 }
